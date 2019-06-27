@@ -1,9 +1,8 @@
 1. Setup a virtual environment.
-2. Fork the repository for [Django REST Task 3](https://github.com/JoinCODED/REST_task_03/) in JoinCODED’s Github and Clone it.
+2. Fork the repository for [Django REST Task 6](https://github.com/JoinCODED/REST_task_06/) in JoinCODED’s Github and Clone it.
 3. Install the packages from the requirements file.
-4. Create a Restaurant create API view:
-    * It should use the same serializer as the update view.
-    * Get the flight id from the url.
-    * Create a `URL` for this view and test it in `postman`.
-    * Replace the api in the **frontends** `book` view with this api.
-7. Push your code
+4. Adjust the permissions of the `BookingsList` and `BookFlight` so that only logged in users can access this view.
+5. Adjust the permissions of the `BookingDetails` so that only an owner of the booking or staff can access the view.
+6. Adjust the permissions of the `UpdateBooking` and `CancelBooking` so that the booking cannot be cancelled or modified unless it's more than 3 days away and the owner of the booking is making the request `OR` a staff user can cancel or modify.
+7. test your modified apis in portman.
+8. Push your code
