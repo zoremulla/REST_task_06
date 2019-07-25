@@ -15,7 +15,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from rest_framework_jwt.views import obtain_jwt_token
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 from flights import views
 
 urlpatterns = [
@@ -28,6 +31,7 @@ urlpatterns = [
     path('booking/<int:booking_id>/cancel/', views.CancelBooking.as_view(), name="cancel-booking"),
     path('book/<int:flight_id>/', views.BookFlight.as_view(), name="book-flight"),
 
-    path('login/', obtain_jwt_token, name="login"),
+    path('login/', TokenObtainPairView.as_view(), name="login"),
+    path('token/refresh/', TokenRefreshView.as_view(), name="token-refresh"),
     path('register/', views.Register.as_view(), name="register"),
 ]

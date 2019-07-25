@@ -49,7 +49,7 @@ class BookingListTest(APITestCase):
 		Booking.objects.create(flight=flight2, date="2021-01-01", user=user2, passengers=2)
 
 		response = self.client.post(reverse('login'), {"username" : "laila", "password": "1234567890-="})
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 
 
 	def test_url_works(self):
@@ -64,7 +64,7 @@ class BookingListTest(APITestCase):
 
 	def test_response(self):
 		response = self.client.post(reverse('login'), {"username" : "laila", "password": "1234567890-="})
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 		response = self.client.get(reverse('bookings-list'))
 
 		user = User.objects.get(username="laila")
@@ -98,24 +98,24 @@ class BookingDetails(APITestCase):
 
 	def test_url_works(self):
 		response = self.client.post(reverse('login'), {"username" : "laila", "password": "1234567890-="})
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 		response = self.client.get(reverse('booking-details', args=[1]))
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 		response = self.client.post(reverse('login'), {"username" : "laila", "password": "1234567890-="})
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 		response = self.client.get(reverse('booking-details', args=[2]))
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 	def test_url_forbidden(self):
 		response = self.client.post(reverse('login'), {"username" : "laila2", "password": "1234567890-="})
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])		
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])		
 		response = self.client.get(reverse('booking-details', args=[1]))
 		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
 		response = self.client.post(reverse('login'), {"username" : "laila", "password": "1234567890-="})
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])		
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])		
 		response = self.client.get(reverse('booking-details', args=[3]))
 		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -125,7 +125,7 @@ class BookingDetails(APITestCase):
 
 	def test_response(self):
 		response = self.client.post(reverse('login'), {"username" : "laila", "password": "1234567890-="})
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 
 		response = self.client.get(reverse('booking-details', args=[1]))
 		booking = Booking.objects.get(id=1)
@@ -163,7 +163,7 @@ class BookingUpdate(APITestCase):
 
 	def test_url_works(self):
 		response = self.client.post(reverse('login'), {"username":"laila", "password":"1234567890-="})
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 
 		data = {"date": "2019-05-05", "passengers": 4}
 		response = self.client.put(reverse('update-booking', args=[4]), data)
@@ -176,7 +176,7 @@ class BookingUpdate(APITestCase):
 
 	def test_url_forbidden(self):
 		response = self.client.post(reverse('login'), {"username":"laila", "password":"1234567890-="})
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 
 		data = {"date": "2019-05-05", "passengers": 4}
 		response = self.client.put(reverse('update-booking', args=[1]), data)
@@ -190,7 +190,7 @@ class BookingUpdate(APITestCase):
 		data = {"date": "2019-05-05", "passengers": 4}
 
 		response = self.client.post(reverse('login'), {"username":"admin", "password":"1234567890-="})
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 
 		old_booking = Booking.objects.get(id=4)
 		response = self.client.put(reverse('update-booking', args=[4]), data)
@@ -206,7 +206,7 @@ class BookingUpdate(APITestCase):
 		data = {"date": "2019-05-05", "passengers": 4}
 
 		response = self.client.post(reverse('login'), {"username":"laila", "password":"1234567890-="})
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 
 		old_booking = Booking.objects.get(id=4)
 		response = self.client.put(reverse('update-booking', args=[4]), data)
@@ -241,7 +241,7 @@ class BookingDelete(APITestCase):
 
 	def test_url_works(self):
 		response = self.client.post(reverse('login'), {"username":"laila", "password":"1234567890-="})
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 		response = self.client.delete(reverse('cancel-booking', args=[4]))
 		self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
@@ -251,7 +251,7 @@ class BookingDelete(APITestCase):
 
 	def test_url_forbidden(self):
 		response = self.client.post(reverse('login'), {"username":"laila", "password":"1234567890-="})
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 		response = self.client.delete(reverse('cancel-booking', args=[1]))
 		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 		response = self.client.delete(reverse('cancel-booking', args=[2]))
@@ -261,14 +261,14 @@ class BookingDelete(APITestCase):
 
 	def test_delete_normal(self):
 		response = self.client.post(reverse('login'), {"username":"laila", "password":"1234567890-="})
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 		response = self.client.delete(reverse('cancel-booking', args=[4]))
 		self.assertEqual(Booking.objects.all().count(), 3)
 		self.assertEqual(Booking.objects.filter(id=4).count(), 0)
 
 	def test_delete_admin(self):
 		response = self.client.post(reverse('login'), {"username":"admin", "password":"1234567890-="})
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 		response = self.client.delete(reverse('cancel-booking', args=[4]))
 		self.assertEqual(Booking.objects.all().count(), 3)
 		self.assertEqual(Booking.objects.filter(id=4).count(), 0)
@@ -297,7 +297,7 @@ class Login(APITestCase):
 
 	def test_unsucceful_login(self):
 		response = self.client.post(reverse('login'), {"username" : "laila", "password": "1234567890-=1"})
-		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 
 class BookingCreate(APITestCase):
@@ -320,7 +320,7 @@ class BookingCreate(APITestCase):
 
 	def test_url_works(self):
 		response = self.client.post(reverse('login'), self.user_data)
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 		response = self.client.post(reverse('book-flight', args=[1]), self.data)
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
@@ -332,7 +332,7 @@ class BookingCreate(APITestCase):
 
 	def test_creation_works(self):
 		response = self.client.post(reverse('login'), self.user_data)
-		self.client.credentials(HTTP_AUTHORIZATION='JWT ' + response.data['token'])
+		self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + response.data['access'])
 
 		user = User.objects.get(id=1)
 
